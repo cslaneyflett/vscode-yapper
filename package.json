@@ -1,5 +1,10 @@
 {
     "name": "yapper",
+    "publisher": "zsbk",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/cslaneyflett/vscode-yapper"
+    },
     "displayName": "Yet Another PhP-cs-fixER",
     "description": "Yet another php-cs-fixer",
     "version": "0.0.1",
@@ -12,7 +17,7 @@
     "activationEvents": [
         "onLanguage:php"
     ],
-    "main": "./out/extension.js",
+    "main": "./dist/extension.js",
     "contributes": {
         "configuration": {
             "title": "yapper",
@@ -61,12 +66,16 @@
         }
     },
     "scripts": {
-        "vscode:prepublish": "npm run compile",
-        "compile": "tsc -p ./",
-        "watch": "tsc -watch -p ./",
+        "vscode:prepublish": "npm run package",
+        "compile": "npm run check-types && node esbuild.mjs",
+        "watch": "npm-run-all -p watch:*",
         "pretest": "npm run compile && npm run lint",
         "lint": "eslint src --ext ts",
-        "test": "vscode-test"
+        "test": "vscode-test",
+        "check-types": "tsc --noEmit",
+        "watch:esbuild": "node esbuild.mjs --watch",
+        "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
+        "package": "npm run check-types && node esbuild.mjs --production"
     },
     "devDependencies": {
         "@types/mocha": "^10.0.7",
@@ -77,6 +86,7 @@
         "@typescript-eslint/parser": "^7.11.0",
         "@vscode/test-cli": "^0.0.9",
         "@vscode/test-electron": "^2.4.0",
+        "esbuild": "^0.23.0",
         "eslint": "^8.57.0",
         "eslint-config-prettier": "^9.1.0",
         "eslint-import-resolver-alias": "^1.1.2",
