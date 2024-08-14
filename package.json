@@ -15,44 +15,44 @@
     "main": "./out/extension.js",
     "contributes": {
         "configuration": {
-            "title": "php-cs-fixer",
+            "title": "yapper",
             "properties": {
-                "php-cs-fixer.php-bin": {
+                "yapper.php-bin": {
                     "type": "string",
                     "default": "php",
                     "description": "What php binary should be used to run fixer? (php, php8.3, etc)"
                 },
-                "php-cs-fixer.use-cache": {
+                "yapper.use-cache": {
                     "type": "boolean",
                     "default": false,
                     "description": "Use a cache file when fixing files? (--using-cache)"
                 },
-                "php-cs-fixer.allow-risky": {
+                "yapper.allow-risky": {
                     "type": "boolean",
                     "default": false,
                     "description": "Are risky fixers allowed? (--allow-risky)"
                 },
-                "php-cs-fixer.ignore-env": {
+                "yapper.ignore-env": {
                     "type": "boolean",
                     "default": false,
                     "description": "Ignore ENV variables? (PHP_CS_FIXER_IGNORE_ENV, see https://cs.symfony.com/doc/usage.html#environment-options)"
                 },
-                "php-cs-fixer.prefer-workspace-fixer": {
+                "yapper.prefer-workspace-fixer": {
                     "type": "boolean",
                     "default": false,
                     "description": "Prefer workspace fixer binaries (/vendor, /tools/*/vendor) to user paths?"
                 },
-                "php-cs-fixer.fixer-paths": {
+                "yapper.fixer-paths": {
                     "type": "array",
                     "default": [],
                     "description": "Paths for fixer binaries, in order of preference. ({$workspaceFolder} is supported)"
                 },
-                "php-cs-fixer.prefer-workspace-config": {
+                "yapper.prefer-workspace-config": {
                     "type": "boolean",
                     "default": false,
                     "description": "Prefer workspace fixer configs (.php-cs-fixer.php, .php-cs-fixer.dist.php) to user paths?"
                 },
-                "php-cs-fixer.config-paths": {
+                "yapper.config-paths": {
                     "type": "array",
                     "default": [],
                     "description": "Paths for fixer configs, in order of preference. ({$workspaceFolder} is supported)"
