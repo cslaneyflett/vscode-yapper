@@ -1,0 +1,94 @@
+{
+    "name": "yapper",
+    "displayName": "Yet Another PhP-cs-fixER",
+    "description": "Yet another php-cs-fixer",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.92.0"
+    },
+    "categories": [
+        "Formatters"
+    ],
+    "activationEvents": [
+        "onLanguage:php"
+    ],
+    "main": "./out/extension.js",
+    "contributes": {
+        "configuration": {
+            "title": "php-cs-fixer",
+            "properties": {
+                "php-cs-fixer.php-bin": {
+                    "type": "string",
+                    "default": "php",
+                    "description": "What php binary should be used to run fixer? (php, php8.3, etc)"
+                },
+                "php-cs-fixer.use-cache": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Use a cache file when fixing files? (--using-cache)"
+                },
+                "php-cs-fixer.allow-risky": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Are risky fixers allowed? (--allow-risky)"
+                },
+                "php-cs-fixer.ignore-env": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Ignore ENV variables? (PHP_CS_FIXER_IGNORE_ENV, see https://cs.symfony.com/doc/usage.html#environment-options)"
+                },
+                "php-cs-fixer.prefer-workspace-fixer": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Prefer workspace fixer binaries (/vendor, /tools/*/vendor) to user paths?"
+                },
+                "php-cs-fixer.fixer-paths": {
+                    "type": "array",
+                    "default": [],
+                    "description": "Paths for fixer binaries, in order of preference. ({$workspaceFolder} is supported)"
+                },
+                "php-cs-fixer.prefer-workspace-config": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Prefer workspace fixer configs (.php-cs-fixer.php, .php-cs-fixer.dist.php) to user paths?"
+                },
+                "php-cs-fixer.config-paths": {
+                    "type": "array",
+                    "default": [],
+                    "description": "Paths for fixer configs, in order of preference. ({$workspaceFolder} is supported)"
+                }
+            }
+        }
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "pretest": "npm run compile && npm run lint",
+        "lint": "eslint src --ext ts",
+        "test": "vscode-test"
+    },
+    "devDependencies": {
+        "@types/mocha": "^10.0.7",
+        "@types/node": "20.x",
+        "@types/tmp": "^0.2.6",
+        "@types/vscode": "^1.92.0",
+        "@typescript-eslint/eslint-plugin": "^7.14.1",
+        "@typescript-eslint/parser": "^7.11.0",
+        "@vscode/test-cli": "^0.0.9",
+        "@vscode/test-electron": "^2.4.0",
+        "eslint": "^8.57.0",
+        "eslint-config-prettier": "^9.1.0",
+        "eslint-import-resolver-alias": "^1.1.2",
+        "eslint-import-resolver-typescript": "^3.6.1",
+        "eslint-plugin-deprecation": "^3.0.0",
+        "eslint-plugin-import": "^2.29.1",
+        "eslint-plugin-prettier": "^5.2.1",
+        "eslint-plugin-unused-imports": "^4.1.3",
+        "typescript": "^5.4.5"
+    },
+    "dependencies": {
+        "glob": "^11.0.0",
+        "tmp": "^0.2.3"
+    }
+}

@@ -1,0 +1,90 @@
+{
+    "root": true,
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaVersion": 2020,
+        "project": ["tsconfig.json"],
+        "sourceType": "module"
+    },
+    "extends": [
+        "prettier",
+        "plugin:import/recommended",
+        "plugin:@typescript-eslint/strict-type-checked",
+        "plugin:@typescript-eslint/stylistic-type-checked",
+        "eslint:recommended",
+        "plugin:deprecation/recommended"
+    ],
+    "plugins": ["@typescript-eslint", "import", "prettier", "unused-imports"],
+    "settings": {
+        "import/extensions": [".mjs", ".js", ".jsx", ".mts", ".ts", ".tsx"],
+        "import/external-module-folders": ["node_modules", "node_modules/@types"],
+        "import/parsers": {
+            "@typescript-eslint/parser": [".mts", ".ts", ".tsx", ".d.ts"]
+        },
+        "import/resolver": {
+            "typescript": {
+                "alwaysTryTypes": true,
+                "project": ["**/tsconfig.json", "**/tsconfig.*.json"]
+            },
+            "alias": {
+                "map": [["@", "./"]],
+                "extensions": [".mts", ".ts", ".tsx", ".d.ts"]
+            }
+        }
+    },
+    "rules": {
+        "@typescript-eslint/naming-convention": [
+            "warn",
+            {
+                "selector": "import",
+                "format": ["camelCase", "PascalCase"]
+            }
+        ],
+        "@typescript-eslint/semi": "warn",
+        "curly": "warn",
+        "eqeqeq": "warn",
+        "no-throw-literal": "warn",
+        "import/extensions": [
+            "error",
+            "ignorePackages",
+            {
+                "js": "never",
+                "mjs": "never",
+                "jsx": "never",
+                "ts": "never",
+                "tsx": "never",
+                "mts": "never"
+            }
+        ],
+        "import/no-unresolved": "error",
+        "@typescript-eslint/consistent-type-exports": "error",
+        "@typescript-eslint/consistent-type-imports": "error",
+        "@typescript-eslint/explicit-member-accessibility": "warn",
+        "import/order": ["warn"],
+        "no-unused-vars": "off",
+        "@typescript-eslint/no-unused-vars": "off",
+        "unused-imports/no-unused-vars": [
+            "warn",
+            {
+                "argsIgnorePattern": "_unused_",
+                "varsIgnorePattern": "_unused_"
+            }
+        ],
+        "unused-imports/no-unused-imports": "error",
+        "@typescript-eslint/prefer-promise-reject-errors": "off",
+        "@typescript-eslint/no-unnecessary-condition": [
+            "error",
+            {
+                "allowConstantLoopConditions": true
+            }
+        ],
+        // incorrectly reports about method overloads
+        "no-dupe-class-members": "off",
+        "no-redeclare": "off",
+        // another brain damaged rule, literally ignores DT defs sometimes
+        "import/named": "off",
+        "no-void": ["error", { "allowAsStatement": true }],
+        "no-unused-expressions": ["error", { "allowTernary": true }]
+    },
+    "ignorePatterns": ["out", "dist", "**/*.d.ts"]
+}
