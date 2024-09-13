@@ -1,10 +1,7 @@
 import path from 'node:path';
 import fs from 'node:fs/promises';
-import cp from 'node:child_process';
 import * as vscode from 'vscode';
 import { glob } from 'glob';
-
-import { getConfig } from './config';
 
 type Variable = 'workspaceFolder';
 type Replacements = Record<Variable, string>;
@@ -52,7 +49,7 @@ const firstPriority = async <T>(promises: Promise<PriorityResponse<T>>[]) => {
  * - for any given glob, the first match is then checked for access
  * - the first string which succeeds is the result
  */
-const findFilePriority = async (resource: vscode.Uri, mode: number, ranked: string[]) => {
+export const findFilePriority = async (resource: vscode.Uri, mode: number, ranked: string[]) => {
     const replacements: Replacements = {
         workspaceFolder: getWorkspaceFolder(resource)?.uri.fsPath ?? '.',
     };
@@ -77,61 +74,4 @@ const findFilePriority = async (resource: vscode.Uri, mode: number, ranked: stri
                 .catch<PriorityResponse<string>>(() => ({ pass: false }));
         })
     );
-};
-
-const composerArgs = [
-    '--no-interaction',
-    '--quiet',
-    '--absolute',
-    'global',
-    'config',
-    'vendor-dir',
-] as const;
-
-const getGlobalVendorDir = () => {
-    try {
-        const buffer = cp.execFileSync('composer', composerArgs);
-        return buffer.toString().trim();
-    } catch (err: unknown) {
-        return undefined;
-    }
-};
-
-export const findFixerPath = async (resource: vscode.Uri) => {
-    const workspacePaths = [
-        '{$workspaceFolder}/tools/*/vendor/bin/php-cs-fixer',
-        '{$workspaceFolder}/vendor/bin/php-cs-fixer',
-    ];
-
-    // global is always lowest priority
-    const globalPaths: string[] = [];
-    const globalVendor = getGlobalVendorDir();
-    if (globalVendor) {
-        globalPaths.push(`${globalVendor}/bin/php-cs-fixer`);
-    }
-
-    const preferWorkspace = getConfig<boolean>('prefer-workspace-fixer');
-    const userFixerPaths = getConfig<string[]>('fixer-paths') ?? [];
-
-    const paths = preferWorkspace
-        ? [...workspacePaths, ...userFixerPaths, ...globalPaths]
-        : [...userFixerPaths, ...workspacePaths, ...globalPaths];
-
-    return findFilePriority(resource, fs.constants.X_OK, paths);
-};
-
-export const findConfigPath = async (resource: vscode.Uri) => {
-    const workspacePaths = [
-        '{$workspaceFolder}/.php-cs-fixer.php',
-        '{$workspaceFolder}/.php-cs-fixer.dist.php',
-    ];
-
-    const preferWorkspace = getConfig<boolean>('prefer-workspace-config');
-    const userFixerPaths = getConfig<string[]>('config-paths') ?? [];
-
-    const paths = preferWorkspace
-        ? [...workspacePaths, ...userFixerPaths]
-        : [...workspacePaths, ...userFixerPaths];
-
-    return findFilePriority(resource, fs.constants.R_OK, paths);
 };

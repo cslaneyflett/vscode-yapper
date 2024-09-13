@@ -25,7 +25,6 @@ INFURIATING!
 5. No binaries included with the extension.
 
 ## What needs improving?
-- Performance, the path searching needs caching
 - Actual unit tests need writing
 - Needs more thorough practical testing
     + I'm sure the async parts may be dodgy like some of the other extensions

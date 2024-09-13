@@ -1,20 +1,24 @@
 import path from 'node:path';
 import cp from 'node:child_process';
-import fs from 'node:fs';
+import fs from 'node:fs/promises';
 import * as vscode from 'vscode';
 import * as tmp from 'tmp';
 
-import { getConfig } from './config';
-import { findFixerPath, findConfigPath } from './finder';
+import { cacheGenerator } from './utils/cache';
+import { getConfig } from './utils/config';
+import { getFixerBin, getConfigPath } from './utils/finder';
 
 // hooks
 let format: vscode.Disposable;
+let workspaceCache: ReturnType<typeof cacheGenerator>;
 
 export function activate(context: vscode.ExtensionContext) {
     format = vscode.languages.registerDocumentFormattingEditProvider('php', {
         provideDocumentFormattingEdits: registerDocumentProvider,
     });
     context.subscriptions.push(format);
+
+    workspaceCache = cacheGenerator(context.workspaceState, 'yapper');
 }
 
 export function deactivate() {
@@ -38,15 +42,8 @@ const handleError = (fixerBin: string, err: cp.ExecFileException) => {
 
 const formatDocument = async (document: vscode.TextDocument) => {
     const phpBin = getConfig<string>('php-binary') ?? 'php';
-    const fixerBin = await findFixerPath(document.uri);
-    if (!fixerBin) {
-        throw new Error('could not locate fixer bin');
-    }
-
-    const configPath = await findConfigPath(document.uri);
-    if (!configPath) {
-        throw new Error('could not locate config path');
-    }
+    const fixerBin = await getFixerBin(workspaceCache, document);
+    const configPath = await getConfigPath(workspaceCache, document);
 
     const args: string[] = [];
     const opts: cp.ExecFileOptions = {
@@ -73,10 +70,10 @@ const formatDocument = async (document: vscode.TextDocument) => {
     args.push('--config=' + configPath);
 
     const tmpFile = tmp.fileSync();
-    fs.writeFileSync(tmpFile.name, document.getText());
+    await fs.writeFile(tmpFile.name, document.getText());
     args.push(tmpFile.name);
 
-    return new Promise<string>(function (resolve) {
+    return new Promise<string>(function (resolve, reject) {
         // void vscode.window.showInformationMessage(phpBin + ' ' + args.join(' '));
         cp.execFile(phpBin, args, opts, (err) => {
             if (err) {
@@ -84,10 +81,16 @@ const formatDocument = async (document: vscode.TextDocument) => {
                 handleError(fixerBin, err);
             }
 
-            const text = fs.readFileSync(tmpFile.name, 'utf-8');
-            tmpFile.removeCallback();
-
-            resolve(text);
+            fs.readFile(tmpFile.name, 'utf-8')
+                .finally(() => {
+                    tmpFile.removeCallback();
+                })
+                .then((text) => {
+                    resolve(text);
+                })
+                .catch((err: unknown) => {
+                    reject(err);
+                });
         });
     });
 };
