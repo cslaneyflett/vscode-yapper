@@ -55,7 +55,8 @@ const formatDocument = async (document: vscode.TextDocument) => {
         opts.env = { PHP_CS_FIXER_IGNORE_ENV: '1' };
     }
 
-    args.push(fixerBin);
+    // node does not correctly escape spaces in arguments while in shell mode
+    args.push('"' + fixerBin + '"');
     args.push('fix');
     args.push('--no-interaction');
 
@@ -67,7 +68,8 @@ const formatDocument = async (document: vscode.TextDocument) => {
         args.push('--allow-risky=yes');
     }
 
-    args.push('--config=' + configPath);
+    // same fix as above
+    args.push('--config="' + configPath + '"');
 
     const tmpFile = tmp.fileSync();
     await fs.writeFile(tmpFile.name, document.getText());

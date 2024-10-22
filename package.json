@@ -7,7 +7,7 @@
     },
     "displayName": "Yet Another PhP-cs-fixER",
     "description": "Yet another php-cs-fixer",
-    "version": "0.0.2",
+    "version": "0.0.3-1",
     "engines": {
         "vscode": "^1.93.0"
     },
