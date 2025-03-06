@@ -7,7 +7,7 @@
     },
     "displayName": "Yet Another PhP-cs-fixER",
     "description": "Yet another php-cs-fixer",
-    "version": "0.0.3-1",
+    "version": "0.0.4",
     "engines": {
         "vscode": "^1.93.0"
     },
@@ -22,44 +22,58 @@
         "configuration": {
             "title": "yapper",
             "properties": {
-                "yapper.php-bin": {
+                "yapper.php-binary": {
                     "type": "string",
                     "default": "php",
+                    "title": "PHP Binary Name",
                     "description": "What php binary should be used to run fixer? (php, php8.3, etc)"
                 },
                 "yapper.use-cache": {
                     "type": "boolean",
                     "default": false,
+                    "title": "Use Fixer Cache?",
                     "description": "Use a cache file when fixing files? (--using-cache)"
+                },
+                "yapper.use-editor-cache": {
+                    "type": "boolean",
+                    "default": true,
+                    "title": "Use Editor Cache?",
+                    "description": "Use a cache to preserve formatter binary and config locations?\nYou shouldn't disable this unless you have a bug."
                 },
                 "yapper.allow-risky": {
                     "type": "boolean",
                     "default": false,
+                    "title": "Allow Risky Fixers?",
                     "description": "Are risky fixers allowed? (--allow-risky)"
                 },
                 "yapper.ignore-env": {
                     "type": "boolean",
                     "default": false,
+                    "title": "Ignore ENV?",
                     "description": "Ignore ENV variables? (PHP_CS_FIXER_IGNORE_ENV, see https://cs.symfony.com/doc/usage.html#environment-options)"
                 },
                 "yapper.prefer-workspace-fixer": {
                     "type": "boolean",
                     "default": false,
+                    "title": "Prefer Workspace Fixer?",
                     "description": "Prefer workspace fixer binaries (/vendor, /tools/*/vendor) to user paths?"
                 },
                 "yapper.fixer-paths": {
                     "type": "array",
                     "default": [],
+                    "title": "Fixer Paths",
                     "description": "Paths for fixer binaries, in order of preference. ({$workspaceFolder} is supported)"
                 },
                 "yapper.prefer-workspace-config": {
                     "type": "boolean",
                     "default": false,
+                    "title": "Prefer Workspace Config?",
                     "description": "Prefer workspace fixer configs (.php-cs-fixer.php, .php-cs-fixer.dist.php) to user paths?"
                 },
                 "yapper.config-paths": {
                     "type": "array",
                     "default": [],
+                    "title": "Config Paths",
                     "description": "Paths for fixer configs, in order of preference. ({$workspaceFolder} is supported)"
                 }
             }
@@ -79,14 +93,14 @@
     },
     "devDependencies": {
         "@types/mocha": "^10.0.8",
-        "@types/node": "^20.14",
+        "@types/node": "^22.0",
         "@types/tmp": "^0.2.6",
         "@types/vscode": "^1.93.0",
         "@typescript-eslint/eslint-plugin": "^7.14.1",
         "@typescript-eslint/parser": "^7.11.0",
         "@vscode/test-cli": "^0.0.10",
-        "@vscode/test-electron": "^2.4.0",
-        "esbuild": "^0.23.1",
+        "@vscode/test-electron": "^2.4.1",
+        "esbuild": "^0.25.0",
         "eslint": "^8.57.0",
         "eslint-config-prettier": "^9.1.0",
         "eslint-import-resolver-alias": "^1.1.2",

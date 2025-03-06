@@ -33,9 +33,14 @@ export const getFixerBin = async (
     workspaceCache: Cache,
     document: vscode.TextDocument
 ): Promise<string> => {
-    const fixerBin = await workspaceCache.get('fixer', () => findFixerPath(document.uri));
+    let fixerBin = await workspaceCache.get('fixer', () => findFixerPath(document.uri));
     if (!fixerBin) {
-        throw new Error('could not locate fixer bin');
+        await workspaceCache.invalidate('fixer');
+        fixerBin = await workspaceCache.get('fixer', () => findFixerPath(document.uri));
+
+        if (!fixerBin) {
+            throw new Error('could not locate fixer bin');
+        }
     }
 
     return await fs
@@ -54,11 +59,11 @@ const findConfigPath = async (resource: vscode.Uri) => {
     ];
 
     const preferWorkspace = getConfig<boolean>('prefer-workspace-config');
-    const userFixerPaths = getConfig<string[]>('config-paths') ?? [];
+    const userConfigPaths = getConfig<string[]>('config-paths') ?? [];
 
     const paths = preferWorkspace
-        ? [...workspacePaths, ...userFixerPaths]
-        : [...workspacePaths, ...userFixerPaths];
+        ? [...workspacePaths, ...userConfigPaths]
+        : [...workspacePaths, ...userConfigPaths];
 
     return await findFilePriority(resource, fs.constants.R_OK, paths);
 };
@@ -67,9 +72,14 @@ export const getConfigPath = async (
     workspaceCache: Cache,
     document: vscode.TextDocument
 ): Promise<string> => {
-    const configPath = await workspaceCache.get('config', () => findConfigPath(document.uri));
+    let configPath = await workspaceCache.get('config', () => findConfigPath(document.uri));
     if (!configPath) {
-        throw new Error('could not locate config path');
+        await workspaceCache.invalidate('config');
+        configPath = await workspaceCache.get('config', () => findConfigPath(document.uri));
+
+        if (!configPath) {
+            throw new Error('could not locate config path');
+        }
     }
 
     return await fs

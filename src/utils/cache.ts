@@ -1,10 +1,17 @@
 import type * as vscode from 'vscode';
+import { getConfig } from './config';
 
 export const cache = async <T>(
     workspace: vscode.Memento,
     key: string,
     restore: () => T | Promise<T>
 ) => {
+    const use = getConfig<boolean>('use-editor-cache');
+    if (!use) {
+        void invalidate(workspace, key);
+        return await restore();
+    }
+
     let value = workspace.get<T>(key);
     if (undefined === value || null === value) {
         value = await Promise.resolve(restore());
